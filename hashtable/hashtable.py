@@ -22,8 +22,9 @@ class HashTable:
 
     def __init__(self, capacity):
         # Your code here
-
-
+        self.capacity = capacity
+        self.hash_table =  [None] * capacity
+       
     def get_num_slots(self):
         """
         Return the length of the list you're using to hold the hash
@@ -34,9 +35,11 @@ class HashTable:
 
         Implement this.
         """
+        
         # Your code here
-
-
+        
+        return self.capacity
+        
     def get_load_factor(self):
         """
         Return the load factor for this hash table.
@@ -44,7 +47,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+         
 
     def fnv1(self, key):
         """
@@ -54,7 +57,7 @@ class HashTable:
         """
 
         # Your code here
-
+        pass
 
     def djb2(self, key):
         """
@@ -63,15 +66,21 @@ class HashTable:
         Implement this, and/or FNV-1.
         """
         # Your code here
+        hash = 5381
+        for b in key:
+        # the modulus keeps it 32-bit, python ints don't overflow
+          hash = ((hash << 5) + hash) + ord(b)
+        #   hash = hash & 0xFFFFFFFF
 
+        return hash
 
     def hash_index(self, key):
         """
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
-        #return self.fnv1(key) % self.capacity
         return self.djb2(key) % self.capacity
+       
 
     def put(self, key, value):
         """
@@ -82,7 +91,9 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        item = HashTableEntry(key, value)
+        pairs = self.hash_index(key)
+        self.hash_table[pairs] = item
 
     def delete(self, key):
         """
@@ -93,8 +104,12 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
-
+        pairs = self.hash_index(key)
+        self.hash_table[pairs].value = None
+        
+        # if h is not key:
+        #     print("Key is not found.")
+        
     def get(self, key):
         """
         Retrieve the value stored with the given key.
@@ -104,7 +119,11 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        pairs = self.hash_index(key)
+        print('self', self.hash_table[pairs])
+        return self.hash_table[pairs].value
+        if k is not key:
+            return None
 
     def resize(self, new_capacity):
         """
@@ -114,8 +133,9 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
-
+        table = HashTable(50)
+        print(table.put('time', 'place'))
+        print(table.get('time'))
 
 if __name__ == "__main__":
     ht = HashTable(8)
