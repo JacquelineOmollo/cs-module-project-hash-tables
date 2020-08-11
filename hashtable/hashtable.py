@@ -11,6 +11,9 @@ class HashTableEntry:
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
 
+class Linked_List:
+    def __init__(self):
+        self.head = None
 
 class HashTable:
     """
@@ -23,7 +26,8 @@ class HashTable:
     def __init__(self, capacity):
         # Your code here
         self.capacity = capacity
-        self.hash_table =  [None] * capacity
+        self.hash_table =  [Linked_List()] * capacity
+        self.num = 0
        
     def get_num_slots(self):
         """
@@ -38,7 +42,8 @@ class HashTable:
         
         # Your code here
         
-        return self.capacity
+       
+        return len(self.hash_table)
         
     def get_load_factor(self):
         """
@@ -47,7 +52,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-         
+        return self.num / len(self.hash_table)
 
     def fnv1(self, key):
         """
@@ -69,9 +74,7 @@ class HashTable:
         hash = 5381
         for b in key:
         # the modulus keeps it 32-bit, python ints don't overflow
-          hash = ((hash << 5) + hash) + ord(b)
-        #   hash = hash & 0xFFFFFFFF
-
+            hash = ((hash << 5) + hash) + ord(b)
         return hash
 
     def hash_index(self, key):
@@ -79,6 +82,7 @@ class HashTable:
         Take an arbitrary key and return a valid integer index
         between within the storage capacity of the hash table.
         """
+        # returns the 32 bit to fit one of the slots of capacity
         return self.djb2(key) % self.capacity
        
 
@@ -91,11 +95,27 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        item = HashTableEntry(key, value)
+        # item = HashTableEntry(key, value)
         pairs = self.hash_index(key)
-        self.hash_table[pairs] = item
+        # self.hash_table[pairs] = item
+        if self.hash_table[pairs].head == None:
+               self.hash_table[pairs].head = HashTableEntry(key, value)
+               
+        return self.num += 1
 
-    def delete(self, key):
+        else:
+            current = self.hash_table[pairs].head
+
+            while current.next:
+
+                if current.key == key:
+                   current.value = value
+                current = current.next
+
+            current.next = HashTableEntry(key, value)
+            self.num += 1
+
+    def delete(self, key): 
         """
         Remove the value stored with the given key.
 
@@ -105,11 +125,21 @@ class HashTable:
         """
         # Your code here
         pairs = self.hash_index(key)
-        self.hash_table[pairs].value = None
-        
-        # if h is not key:
-        #     print("Key is not found.")
-        
+        current = self.hash_table[pairs].head
+        if current.key == key:
+            self.hash_table[pairs].head = self.hash_table[pairs].head.next
+        else:
+            self.num -= 1
+            return
+            
+        while current.next:
+            prev = current
+            current = current.next
+            if current.key == key:
+                prev.next = current.next
+                self.num -= 1
+                return None
+            
     def get(self, key):
         """
         Retrieve the value stored with the given key.
@@ -120,10 +150,21 @@ class HashTable:
         """
         # Your code here
         pairs = self.hash_index(key)
-        print('self', self.hash_table[pairs])
-        return self.hash_table[pairs].value
-        if k is not key:
+        current = self.hash_table[pairs].head
+        # print('self', self.hash_table[pairs])
+        # return self.hash_table[pairs].value = None
+        
+        if current == None:
             return None
+
+        if current.key == key:
+            return current.value
+
+        while current.next:
+            current = current.next
+            if current.key == key:
+                return current.value
+        return None
 
     def resize(self, new_capacity):
         """
@@ -133,9 +174,29 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        table = HashTable(50)
-        print(table.put('time', 'place'))
-        print(table.get('time'))
+        # table = HashTable(50)
+        # print(table.put('time', 'place'))
+        # print(table.get('time'))
+
+         self.capacity = new_capacity
+        new_hash = [LinkedList()] * new_capacity
+
+        for i in self.hash_index:
+            current = i.head
+
+            while current is not None:
+                pairs = self.hash_index(current.key)
+
+                if new_hash[pairs].head == None:
+                    new_hash[pairs].head = HashTableEntry(current.key, current.value)
+                else:
+                    node = HashTableEntry(current.key, current.value)
+
+                    node.next = new_hash[pairs].head
+
+                    new_hash[pairs].head = node
+                current = current.next
+        self.hash_table = new_hash
 
 if __name__ == "__main__":
     ht = HashTable(8)
