@@ -1,5 +1,17 @@
 def no_dups(s):
-    # Your code here
+    words = {}
+
+    def dupe(word):
+        if word in words:
+            return True
+        else:
+            words[word] = True
+            return False
+
+    if s == " ":
+        return s
+    else:
+        return  " ".join([word for word in s.split() if not dupe(word)])
 
 
 
