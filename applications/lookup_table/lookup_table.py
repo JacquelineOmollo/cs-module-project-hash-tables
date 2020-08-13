@@ -1,6 +1,7 @@
-import math # Your code here
-
-
+import math, random # Your code here
+cache = {}
+ 
+ 
 def slowfun_too_slow(x, y):
     v = math.pow(x, y)
     v = math.factorial(v)
@@ -15,11 +16,13 @@ def slowfun(x, y):
     output, but completes quickly instead of taking ages to run.
     """
     # Your code here
-    lookup_table = {}
-    # for v in range(50000):
-    #     lookup_table[v] = slowfun_too_slow(v)
-    #     return lookup_table
-
+    lookup = (x, y)
+    
+    if lookup not in cache:
+         cache[lookup] = slowfun_too_slow(x, y)
+    return cache[lookup]
+    
+    
 
 # Do not modify below this line!
 

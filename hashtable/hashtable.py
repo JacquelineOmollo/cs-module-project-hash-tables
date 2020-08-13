@@ -101,19 +101,18 @@ class HashTable:
         if self.hash_table[pairs].head == None:
                self.hash_table[pairs].head = HashTableEntry(key, value)
                
-        return self.num += 1
+        return self.num + 1
 
-        else:
+            else:
             current = self.hash_table[pairs].head
 
             while current.next:
 
                 if current.key == key:
                    current.value = value
-                current = current.next
-
-            current.next = HashTableEntry(key, value)
-            self.num += 1
+                   current = current.next
+                   current.next = HashTableEntry(key, value)
+            # self.num += 1
 
     def delete(self, key): 
         """

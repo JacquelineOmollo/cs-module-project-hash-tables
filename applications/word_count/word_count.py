@@ -1,6 +1,27 @@
 def word_count(s):
-    # Your code here
+    cache = {}  
+   
+#  Case should be ignored
+#  Output keys must be lowercase.
+#  Split the strings into words on any whitespace
+#  ignore each of the following characters:" : ; , . - + = / \ | [ ] { } ( ) * ^ &
 
+    lowercase = s.lower()
+    ignore = '" : ; , . - + = / \ | [ ] {} ( ) * ^ &"'.split(" ")
+
+    for i in ignore:
+        lowercase = lowercase.replace(i, "")
+    for word in lowercase.split():
+        print(word)
+        if word == "":
+            return word
+        if word not in cache:
+            cache[word] = 1
+        else:
+            cache[word] += 1
+    
+    return cache
+   
 
 
 if __name__ == "__main__":
